@@ -22,14 +22,16 @@ def _read_events(input_fname, info):
     info : dict
         Header info array.
     """
+    include_events = ['90  ', '30  ', '20  ']
     mff_events, event_codes = _read_mff_events(input_fname, info['sfreq'])
     info['n_events'] = len(event_codes)
     info['event_codes'] = np.asarray(event_codes).astype('<U4')
     events = np.zeros([info['n_events'],
                       info['n_segments'] * info['n_samples']])
     for n, event in enumerate(event_codes):
-        for i in mff_events[event]:
-            events[n][i] = n + 1
+        if event in include_events:
+            for i in mff_events[event]:
+                events[n][i] = n + 1
     return events, info
 
 
